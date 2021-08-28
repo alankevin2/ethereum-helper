@@ -4,6 +4,23 @@ const tslib_1 = require("tslib");
 // Import all dependencies, mostly using destructuring for better view.
 const bot_sdk_1 = require("@line/bot-sdk");
 const express_1 = (0, tslib_1.__importDefault)(require("express"));
+const web3_1 = (0, tslib_1.__importDefault)(require("web3"));
+// ts-ignore
+const web3 = new web3_1.default(new web3_1.default.providers.WebsocketProvider('wss://mainnet.infura.io/ws/v3/b633a6af7b8b496596ca35b83eb4712e'));
+const wallet = '0x2E43f6EB26d9659b8c4eD86C840F6C45c60f2211';
+const getBalance = async function () {
+    return new Promise((resolve, reject) => {
+        web3.eth.getBalance(wallet, (err, balance) => {
+            if (err) {
+                console.error(err);
+                reject(err);
+                return;
+            }
+            console.log(web3.utils.fromWei(balance));
+            resolve(web3.utils.fromWei(balance));
+        });
+    });
+};
 // Setup all LINE client and Express configurations.
 const clientConfig = {
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN || '',
@@ -44,6 +61,7 @@ app.get('/', async (_, res) => {
     return res.status(200).json({
         status: 'success',
         message: 'Connected successfully!',
+        wallet,
     });
 });
 // This route is used for the Webhook.
@@ -64,10 +82,12 @@ app.post('/webhook', (0, bot_sdk_1.middleware)(middlewareConfig), async (req, re
             });
         }
     }));
+    const balance = await getBalance();
     // Return a successfull message.
     return res.status(200).json({
         status: 'success',
         results,
+        balance,
     });
 });
 // Create a server and listen to it.
