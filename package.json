@@ -17,5 +17,8 @@
     "dev": "npm run build --watch"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "engines": {
+    "node": "12.18.1"
+  }
 }
