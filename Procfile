@@ -1,1 +1,1 @@
-web: npm run build && npm run go
+web: npm run go
