@@ -8,7 +8,7 @@ const web3 = new Web3(new Web3.providers.WebsocketProvider('wss://mainnet.infura
 const wallet = '0x2E43f6EB26d9659b8c4eD86C840F6C45c60f2211';
 
 const getBalance = async function() {
-  return new Promise((resolve, reject) => {
+  return new Promise<string>((resolve, reject) => {
     web3.eth.getBalance(wallet, (err, balance) => {
       if (err) {
           console.error(err);
@@ -51,10 +51,12 @@ const textEventHandler = async (event: WebhookEvent): Promise<MessageAPIResponse
   const { replyToken } = event;
   const { text } = event.message;
 
+  const balance: string = await getBalance();
+
   // Create a new message.
   const response: TextMessage = {
     type: 'text',
-    text,
+    text: balance,
   };
 
   // Reply to the user.
@@ -103,13 +105,10 @@ app.post(
       })
     );
 
-    const balance = await getBalance();
-
     // Return a successfull message.
     return res.status(200).json({
       status: 'success',
       results,
-      balance,
     });
   }
 );
