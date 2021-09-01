@@ -29,7 +29,7 @@ const textEventHandler = async (event) => {
     let userID;
     if (userLineID && !userIDHash[userLineID]) {
         const exist = await db_1.default.instance.isUserExist(userLineID);
-        if (exist) {
+        if (!exist) {
             userID = await db_1.default.instance.insertUser(userLineID);
         }
         else {
