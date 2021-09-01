@@ -1,8 +1,6 @@
 import MySQL from 'mysql';
 import  * as Q  from './db_queries_generator';
 
-const databaseName = 'ethereum-helper';
-
 type Success = any;
 
 export default class Database {

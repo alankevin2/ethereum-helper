@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const mysql_1 = (0, tslib_1.__importDefault)(require("mysql"));
 const Q = (0, tslib_1.__importStar)(require("./db_queries_generator"));
-const databaseName = 'ethereum-helper';
 class Database {
     static _instance;
     static get instance() {

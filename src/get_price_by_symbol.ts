@@ -13,7 +13,7 @@ export default async function getPrice(symbol: string): Promise<string> {
             const theFourthTD = $(eachTR).children('td')[3];
             const price: string | null = $(theFourthTD).find('a.cmc-link').first().html() || null;
             if (eachSymbol.html() === symbol && price != null) {
-                resolve(price.replace('$', '').replace(',', ''));
+                resolve(price);
             }
         });
         reject('Cannot find any ticker matches the symbol or price is empty');
