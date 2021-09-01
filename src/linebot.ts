@@ -1,25 +1,8 @@
 // Import all dependencies, mostly using destructuring for better view.
 import { ClientConfig, Client, middleware, MiddlewareConfig, WebhookEvent, TextMessage, MessageAPIResponseBase } from '@line/bot-sdk';
 import express, { Application, Request, Response } from 'express';
-import Web3 from 'web3';
-// ts-ignore
 
-const web3 = new Web3(new Web3.providers.WebsocketProvider('wss://mainnet.infura.io/ws/v3/b633a6af7b8b496596ca35b83eb4712e'));
-const wallet = '0x2E43f6EB26d9659b8c4eD86C840F6C45c60f2211';
-
-const getBalance = async function() {
-  return new Promise<string>((resolve, reject) => {
-    web3.eth.getBalance(wallet, (err, balance) => {
-      if (err) {
-          console.error(err);
-          reject(err);
-          return
-      }
-      console.log(web3.utils.fromWei(balance));
-      resolve(web3.utils.fromWei(balance))
-    });
-  })
-}
+import getBalance from './get_wallet_balance';
 
 // Setup all LINE client and Express configurations.
 const clientConfig: ClientConfig = {
@@ -75,7 +58,6 @@ app.get(
     return res.status(200).json({
       status: 'success',
       message: 'Connected successfully!',
-      wallet,
     });
   }
 );
