@@ -2,7 +2,10 @@
 import { ClientConfig, Client, middleware, MiddlewareConfig, WebhookEvent, TextMessage, MessageAPIResponseBase } from '@line/bot-sdk';
 import express, { Application, Request, Response } from 'express';
 
-import getBalance from './get_wallet_balance';
+import handleMessage from './linebot_commands';
+import db from './db';
+
+let userIDHash: { [key: string]: string } = {};
 
 // Setup all LINE client and Express configurations.
 const clientConfig: ClientConfig = {
@@ -20,29 +23,32 @@ const PORT = process.env.PORT || 3000;
 // Create a new LINE SDK client.
 const client = new Client(clientConfig);
 
-// Create a new Express application.
 const app: Application = express();
 
-// Function handler to receive the text.
 const textEventHandler = async (event: WebhookEvent): Promise<MessageAPIResponseBase | undefined> => {
-  // Process all variables here.
   if (event.type !== 'message' || event.message.type !== 'text') {
     return;
   }
 
-  // Process all message related variables here.
-  const { replyToken } = event;
-  const { text } = event.message;
+  const { replyToken, source } = event;
+  const userLineID = source.userId;
+  let userID;
+  if (userLineID && !userIDHash[userLineID]) {
+    const exist = await db.instance.isUserExist(userLineID);
+    if (exist) {
+      userID = await db.instance.insertUser(userLineID);
+    } else {
+      userID = await db.instance.selectUserID(userLineID);
+    }
+    userIDHash[userLineID] = userID;
+  }
 
-  const balance: string = await getBalance();
-
-  // Create a new message.
+  const text = await handleMessage(userID, replyToken, event.message.text);  
   const response: TextMessage = {
     type: 'text',
-    text: balance,
+    text,
   };
 
-  // Reply to the user.
   await client.replyMessage(replyToken, response);
 };
 
@@ -78,7 +84,6 @@ app.post(
           if (err instanceof Error) {
             console.error(err);
           }
-
           // Return an error message.
           return res.status(500).json({
             status: 'error',
@@ -87,7 +92,6 @@ app.post(
       })
     );
 
-    // Return a successfull message.
     return res.status(200).json({
       status: 'success',
       results,
@@ -95,7 +99,10 @@ app.post(
   }
 );
 
-// Create a server and listen to it.
 app.listen(PORT, () => {
   console.log(`Application is live and listening on port ${PORT}`);
+  setInterval(() => {
+    userIDHash = {};
+  }, 1000 * 60 * 60 * 24);
+  // 每天重置hash以免記憶體過大
 });

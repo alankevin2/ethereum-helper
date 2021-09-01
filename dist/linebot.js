@@ -4,7 +4,9 @@ const tslib_1 = require("tslib");
 // Import all dependencies, mostly using destructuring for better view.
 const bot_sdk_1 = require("@line/bot-sdk");
 const express_1 = (0, tslib_1.__importDefault)(require("express"));
-const get_wallet_balance_1 = (0, tslib_1.__importDefault)(require("./get_wallet_balance"));
+const linebot_commands_1 = (0, tslib_1.__importDefault)(require("./linebot_commands"));
+const db_1 = (0, tslib_1.__importDefault)(require("./db"));
+let userIDHash = {};
 // Setup all LINE client and Express configurations.
 const clientConfig = {
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN || '',
@@ -17,24 +19,29 @@ const middlewareConfig = {
 const PORT = process.env.PORT || 3000;
 // Create a new LINE SDK client.
 const client = new bot_sdk_1.Client(clientConfig);
-// Create a new Express application.
 const app = (0, express_1.default)();
-// Function handler to receive the text.
 const textEventHandler = async (event) => {
-    // Process all variables here.
     if (event.type !== 'message' || event.message.type !== 'text') {
         return;
     }
-    // Process all message related variables here.
-    const { replyToken } = event;
-    const { text } = event.message;
-    const balance = await (0, get_wallet_balance_1.default)();
-    // Create a new message.
+    const { replyToken, source } = event;
+    const userLineID = source.userId;
+    let userID;
+    if (userLineID && !userIDHash[userLineID]) {
+        const exist = await db_1.default.instance.isUserExist(userLineID);
+        if (exist) {
+            userID = await db_1.default.instance.insertUser(userLineID);
+        }
+        else {
+            userID = await db_1.default.instance.selectUserID(userLineID);
+        }
+        userIDHash[userLineID] = userID;
+    }
+    const text = await (0, linebot_commands_1.default)(userID, replyToken, event.message.text);
     const response = {
         type: 'text',
-        text: balance,
+        text,
     };
-    // Reply to the user.
     await client.replyMessage(replyToken, response);
 };
 // Register the LINE middleware.
@@ -66,14 +73,16 @@ app.post('/webhook', (0, bot_sdk_1.middleware)(middlewareConfig), async (req, re
             });
         }
     }));
-    // Return a successfull message.
     return res.status(200).json({
         status: 'success',
         results,
     });
 });
-// Create a server and listen to it.
 app.listen(PORT, () => {
     console.log(`Application is live and listening on port ${PORT}`);
+    setInterval(() => {
+        userIDHash = {};
+    }, 1000 * 60 * 60 * 24);
+    // 每天重置hash以免記憶體過大
 });
 //# sourceMappingURL=linebot.js.map
