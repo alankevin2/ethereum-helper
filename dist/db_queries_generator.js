@@ -38,7 +38,7 @@ function IS_USER_EXISTS(line_user_id) {
 }
 exports.IS_USER_EXISTS = IS_USER_EXISTS;
 function INSERT_USER(line_user_id) {
-    return `INSERT INTO ${TABLES.USERS} (${FIELDS.LINE_USER_ID}) VALUES (${line_user_id});`;
+    return `INSERT INTO ${TABLES.USERS} (${FIELDS.LINE_USER_ID}) VALUES ("${line_user_id}");`;
 }
 exports.INSERT_USER = INSERT_USER;
 function SELECT_USER_ID(line_user_id) {
@@ -46,7 +46,7 @@ function SELECT_USER_ID(line_user_id) {
 }
 exports.SELECT_USER_ID = SELECT_USER_ID;
 function UPDATE_LAST_QUERY_SYMBOL(line_user_id, symbol) {
-    return `UPDATE ${TABLES.USERS} SET ${FIELDS.LAST_QUERY_SYMBOL} = ${symbol} WHERE ${FIELDS.LINE_USER_ID} = ${line_user_id};`;
+    return `UPDATE ${TABLES.USERS} SET ${FIELDS.LAST_QUERY_SYMBOL} = "${symbol}" WHERE ${FIELDS.LINE_USER_ID} = ${line_user_id};`;
 }
 exports.UPDATE_LAST_QUERY_SYMBOL = UPDATE_LAST_QUERY_SYMBOL;
 function SELECT_LAST_QUERY_SYMBOL(line_user_id) {
