@@ -14,15 +14,6 @@ async function main() {
 
 main();
 
-async function test_handleMessage() {
-    handleMessage('123', 'replytoken', '/price BTC')
-        .then(v => console.log(v)).catch(err => console.log(err));
-}
-
-async function test_setWallet() {
-
-}
-
 async function test_getBalance() {
     const params = {
         line_uid: 'U1f595cafc25711a6a36c48cc455ba270',

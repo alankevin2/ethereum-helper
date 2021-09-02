@@ -68,9 +68,9 @@ export default class Database {
         });
     }
 
-    async selectUserID(line_user_id: string): Promise<Error | Success> {
+    async selectUser(line_user_id: string): Promise<Error | Success> {
         return new Promise<Error | Success>((resolve, reject) => {
-            this.connection!.query(Q.SELECT_USER_ID(line_user_id), (err, result) => {
+            this.connection!.query(Q.SELECT_USER(line_user_id), (err, result) => {
                 if (err) {
                     reject(err);
                     return;
@@ -102,6 +102,10 @@ export default class Database {
                 resolve(result);
             })
         });
+    }
+
+    async removeWallet(user_id: string, address: string | null, nickname: string | null) {
+
     }
 
     async updateWalletAddress(user_id: string, address: string, nickname: string | null): Promise<Error | Success> {

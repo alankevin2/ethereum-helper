@@ -32,7 +32,11 @@ async function setWallet(params: CommandParameters): Promise<string> {
         return reply;
     }
     
-    await db.instance.insertWallet(params.line_uid, params.parameters[0], params.parameters[1] || '');
+    try {
+        await db.instance.insertWallet(params.line_uid, params.parameters[0], params.parameters[1] || '');
+    } catch {
+        return reply;
+    }
     reply = '設置成功';
     return reply;
 }
@@ -84,13 +88,16 @@ async function getPrice(params: CommandParameters): Promise<string> {
     let reply = '取得幣價失敗';
     let symbol = params.parameters[0];
     if (!symbol) {
-
-    } else {
-        // await db.instance.
+        const user: any = db.instance.selectUser(params.line_uid);
+        symbol = user.symbol || '';
     }
 
-    reply = await getPriceFromCoinBase(params.parameters[0]);
-    reply = `params.parameters[0]: ${reply} USD`;
+    try {
+        reply = await getPriceFromCoinBase(symbol);
+        reply = `${params.parameters[0]}: ${reply} USD`;
+    } catch {
+        return reply;
+    }
     return reply;
 }
 
