@@ -91,10 +91,11 @@ async function getPrice(params: CommandParameters): Promise<string> {
         const user: any = await db.instance.selectUser(params.line_uid);
         symbol = user[0].last_query_symbol || '';
     }
-
+    symbol = symbol.toUpperCase();
     try {
         reply = await getPriceFromCoinBase(symbol);
-        reply = `${params.parameters[0]}: ${reply} USD`;
+        reply = `${symbol}: ${reply} USD`;
+        db.instance.updateSymbol(params.user_id, symbol);
     } catch {
         return reply;
     }

@@ -53,8 +53,8 @@ export function SELECT_USER(line_user_id: string): string {
     return `SELECT * FROM ${TABLES.USERS} WHERE ${FIELDS.LINE_USER_ID} = \"${line_user_id}\" LIMIT 1`;
 }
 
-export function UPDATE_LAST_QUERY_SYMBOL(line_user_id: string, symbol: string): string {
-    return `UPDATE ${TABLES.USERS} SET ${FIELDS.LAST_QUERY_SYMBOL} = \"${symbol}\" WHERE ${FIELDS.LINE_USER_ID} = \"${line_user_id}\"`;
+export function UPDATE_LAST_QUERY_SYMBOL(user_id: string, symbol: string): string {
+    return `UPDATE ${TABLES.USERS} SET ${FIELDS.LAST_QUERY_SYMBOL} = \"${symbol}\" WHERE \`id\` = ${user_id}`;
 }
 
 export function SELECT_LAST_QUERY_SYMBOL(line_user_id: string): string {

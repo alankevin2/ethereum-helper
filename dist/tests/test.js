@@ -6,9 +6,9 @@ const get_price_by_symbol_1 = (0, tslib_1.__importDefault)(require("../src/get_p
 const db_1 = (0, tslib_1.__importDefault)(require("../src/db"));
 const params = {
     line_uid: '123',
-    user_id: '65',
+    user_id: '5',
     replyToken: '',
-    parameters: ['']
+    parameters: ['SOL']
 };
 async function main() {
     // test_handleMessage();
@@ -55,6 +55,7 @@ async function test_getPrice() {
     try {
         reply = await (0, get_price_by_symbol_1.default)(symbol);
         reply = `${params.parameters[0]}: ${reply} USD`;
+        db_1.default.instance.updateSymbol(params.user_id, symbol);
     }
     catch {
         return reply;
