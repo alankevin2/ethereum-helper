@@ -1,9 +1,9 @@
 import Web3 from 'web3';
 import request from 'request-promise';
-import getGasFee from './get_gas_fee_of_ethereum';
-import getPrice from './get_price_by_symbol';
+import getGasFee from '../src/get_gas_fee_of_ethereum';
+import getPrice from '../src/get_price_by_symbol';
 
-import db from './db';
+import db from '../src/db';
 
 const infura = 'wss://mainnet.infura.io/ws/v3/b633a6af7b8b496596ca35b83eb4712e'
 const web3 = new Web3(new Web3.providers.WebsocketProvider(infura));
@@ -32,13 +32,26 @@ export default async function showGasFeeInTWD(): Promise<string> {
 //     console.log(selectResult);
 // });
 
-db.instance.selectUserID('123').then(async (v) => {
-    console.log(v);
+// db.instance.selectUserID('123').then(async (v) => {
+//     console.log(v);
 
-    const res = await db.instance.selectWallets(v[0]['id']);
-    console.log(res);
-    const a = await db.instance.insertWallet(v[0]['id'], 'address', '123wallet')
-    console.log(a);
-    const b = await db.instance.selectWallets(v[0]['id']);
-    console.log(b);
-});
+//     const res = await db.instance.selectWallets(v[0]['id']);
+//     console.log(res);
+//     const a = await db.instance.insertWallet(v[0]['id'], 'address', '123wallet')
+//     console.log(a);
+//     const b = await db.instance.selectWallets(v[0]['id']);
+//     console.log(b);
+// });
+let userID;
+async function main() {
+    if (userLineID && !userIDHash[userLineID]) {
+        const exist = await db.instance.isUserExist(userLineID);
+        if (!exist || exist instanceof Error) {
+            await db.instance.insertUser(userLineID);
+        }
+        userID = await db.instance.selectUserID(userLineID);
+        userIDHash[userLineID] = userID;
+    }
+}
+
+main().then(() => {});

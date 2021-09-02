@@ -51,7 +51,7 @@ export default class Database {
                     reject(err);
                     return;
                 }
-                resolve(true);
+                resolve(result);
             })
         });
     }

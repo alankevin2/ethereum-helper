@@ -23,7 +23,8 @@
   },
   "scripts": {
     "go": "node dist/linebot.js",
-    "build": "ts",
+    "build": "ts src/**/*.ts",
+    "buildt": "ts tests/**/*.ts",
     "dev": "npm run build --watch"
   },
   "author": "",
