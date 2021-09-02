@@ -25,7 +25,12 @@ async function setWallet(params) {
         reply = `${reply}：沒有設置地址`;
         return reply;
     }
-    await db_1.default.instance.insertWallet(params.line_uid, params.parameters[0], params.parameters[1] || '');
+    try {
+        await db_1.default.instance.insertWallet(params.line_uid, params.parameters[0], params.parameters[1] || '');
+    }
+    catch {
+        return reply;
+    }
     reply = '設置成功';
     return reply;
 }
@@ -70,12 +75,16 @@ async function getPrice(params) {
     let reply = '取得幣價失敗';
     let symbol = params.parameters[0];
     if (!symbol) {
+        const user = db_1.default.instance.selectUser(params.line_uid);
+        symbol = user.symbol || '';
     }
-    else {
-        // await db.instance.
+    try {
+        reply = await (0, get_price_by_symbol_1.default)(symbol);
+        reply = `${params.parameters[0]}: ${reply} USD`;
     }
-    reply = await (0, get_price_by_symbol_1.default)(params.parameters[0]);
-    reply = `params.parameters[0]: ${reply} USD`;
+    catch {
+        return reply;
+    }
     return reply;
 }
 async function getGasPrice(params) {
