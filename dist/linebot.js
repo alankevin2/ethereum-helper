@@ -21,13 +21,13 @@ const PORT = process.env.PORT || 3000;
 const client = new bot_sdk_1.Client(clientConfig);
 const app = (0, express_1.default)();
 const textEventHandler = async (event) => {
-    if (event.type !== 'message' || event.message.type !== 'text') {
+    if (event.type !== 'message' || event.message.type !== 'text' || !event.source.userId) {
         return;
     }
     const { replyToken, source } = event;
     const userLineID = source.userId;
-    let userID;
-    if (userLineID && !userIDHash[userLineID]) {
+    let userID = userIDHash[userLineID];
+    if (!userID) {
         const exist = await db_1.default.instance.isUserExist(userLineID);
         if (!exist || exist instanceof Error) {
             await db_1.default.instance.insertUser(userLineID);

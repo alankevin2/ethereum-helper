@@ -2,7 +2,7 @@ import Web3 from 'web3';
 import request from 'request-promise';
 import getGasFee from '../src/get_gas_fee_of_ethereum';
 import getPrice from '../src/get_price_by_symbol';
-
+import handleMessage from '../src/linebot_commands';
 import db from '../src/db';
 
 const infura = 'wss://mainnet.infura.io/ws/v3/b633a6af7b8b496596ca35b83eb4712e'
@@ -42,16 +42,6 @@ export default async function showGasFeeInTWD(): Promise<string> {
 //     const b = await db.instance.selectWallets(v[0]['id']);
 //     console.log(b);
 // });
-let userID;
-async function main() {
-    if (userLineID && !userIDHash[userLineID]) {
-        const exist = await db.instance.isUserExist(userLineID);
-        if (!exist || exist instanceof Error) {
-            await db.instance.insertUser(userLineID);
-        }
-        userID = await db.instance.selectUserID(userLineID);
-        userIDHash[userLineID] = userID;
-    }
-}
 
-main().then(() => {});
+handleMessage('123', 'replytoken', '/price BTC')
+    .then(v => console.log(v)).catch(err => console.log(err));
