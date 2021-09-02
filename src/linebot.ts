@@ -40,8 +40,8 @@ const textEventHandler = async (event: WebhookEvent): Promise<MessageAPIResponse
         await db.instance.insertUser(userLineID);
     }
     const user = await db.instance.selectUser(userLineID);
-    userIDHash[userLineID] = user.id;
-    userID = user.id;
+    userIDHash[userLineID] = user[0].id;
+    userID = user[0].id;
   }
 
   const text = await handleMessage(userID, userLineID, replyToken, event.message.text);  
