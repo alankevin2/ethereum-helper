@@ -43,7 +43,7 @@ const textEventHandler = async (event: WebhookEvent): Promise<MessageAPIResponse
     userIDHash[userLineID] = userID;
   }
 
-  const text = await handleMessage(userID, replyToken, event.message.text);  
+  const text = await handleMessage(userID, userLineID, replyToken, event.message.text);  
   const response: TextMessage = {
     type: 'text',
     text,

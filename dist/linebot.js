@@ -35,7 +35,7 @@ const textEventHandler = async (event) => {
         userID = await db_1.default.instance.selectUserID(userLineID);
         userIDHash[userLineID] = userID;
     }
-    const text = await (0, linebot_commands_1.default)(userID, replyToken, event.message.text);
+    const text = await (0, linebot_commands_1.default)(userID, userLineID, replyToken, event.message.text);
     const response = {
         type: 'text',
         text,

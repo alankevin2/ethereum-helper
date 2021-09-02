@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DELETE_WALLET = exports.SELECT_WALLETS = exports.UPDATE_WALLET = exports.INSERT_WALLET = exports.DELETE_USER = exports.SELECT_LAST_QUERY_SYMBOL = exports.UPDATE_LAST_QUERY_SYMBOL = exports.SELECT_USER_ID = exports.INSERT_USER = exports.IS_USER_EXISTS = exports.CREATE_TABLE_WALLETS = exports.CREATE_TABLE_USERS = void 0;
+exports.DELETE_WALLET = exports.SELECT_WALLETS = exports.UPDATE_WALLET = exports.INSERT_WALLET = exports.DELETE_USER = exports.SELECT_LAST_QUERY_SYMBOL = exports.UPDATE_LAST_QUERY_SYMBOL = exports.SELECT_USER_ID = exports.INSERT_USER = exports.IS_USER_EXISTS = exports.SELECT_ALL_USERS = exports.CREATE_TABLE_WALLETS = exports.CREATE_TABLE_USERS = void 0;
 const TABLES = {
     USERS: '\`users\`',
     WALLETS: '\`wallets\`',
@@ -33,6 +33,7 @@ exports.CREATE_TABLE_WALLETS = `CREATE TABLE IF NOT EXISTS ${TABLES.WALLETS} (
         PRIMARY KEY (\`id\`, ${FIELDS.NICKNAME})
     );`;
 // users related
+exports.SELECT_ALL_USERS = `SELECT * FROM ${TABLES.USERS} WHERE 1 LIMIT 100`;
 function IS_USER_EXISTS(line_user_id) {
     return `SELECT * FROM ${TABLES.USERS} WHERE ${TABLES.USERS}.\`line_user_id\` = \"${line_user_id}\" LIMIT 1`;
 }
@@ -62,18 +63,18 @@ function INSERT_WALLET(user_id, address, nickname) {
     return `INSERT INTO ${TABLES.WALLETS} SET 
     ${FIELDS.ADDRESS} = \"${address}\",
     ${FIELDS.NICKNAME} = \"${nickname ? nickname : ""}\", 
-    ${FIELDS.USER_ID} = \"${user_id}\"`;
+    ${FIELDS.USER_ID} = ${user_id}`;
 }
 exports.INSERT_WALLET = INSERT_WALLET;
 function UPDATE_WALLET(user_id, address, nickname) {
     return `UPDATE ${TABLES.WALLETS} SET 
     ${FIELDS.ADDRESS} = \"${address}\",
     ${FIELDS.NICKNAME} = \"${nickname ? nickname : ""}\" 
-    WHERE ${FIELDS.USER_ID} = \"${user_id}\"`;
+    WHERE ${FIELDS.USER_ID} = ${user_id}`;
 }
 exports.UPDATE_WALLET = UPDATE_WALLET;
 function SELECT_WALLETS(user_id) {
-    return `SELECT ${FIELDS.ADDRESS}, ${FIELDS.NICKNAME} FROM ${TABLES.WALLETS} WHERE ${FIELDS.USER_ID} = \"${user_id}\"`;
+    return `SELECT ${FIELDS.ADDRESS}, ${FIELDS.NICKNAME} FROM ${TABLES.WALLETS} WHERE ${FIELDS.USER_ID} = ${user_id}`;
 }
 exports.SELECT_WALLETS = SELECT_WALLETS;
 function DELETE_WALLET(user_id, nickname) {

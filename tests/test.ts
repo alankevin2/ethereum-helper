@@ -3,45 +3,61 @@ import request from 'request-promise';
 import getGasFee from '../src/get_gas_fee_of_ethereum';
 import getPrice from '../src/get_price_by_symbol';
 import handleMessage from '../src/linebot_commands';
+import getBlance from '../src/linebot_commands';
+import getBalanceFromEthereum from '../src/get_wallet_balance';
 import db from '../src/db';
 
-const infura = 'wss://mainnet.infura.io/ws/v3/b633a6af7b8b496596ca35b83eb4712e'
-const web3 = new Web3(new Web3.providers.WebsocketProvider(infura));
-enum FiatRatesForTWD {
-    USDT = 28
+async function main() {
+    // test_handleMessage();
+    console.log(await test_getBalance());
 }
 
-export default async function showGasFeeInTWD(): Promise<string> {
-    return new Promise<string>(async (resolve, reject) => {
-        const gasfee = await getGasFee();
-        const ethPriceInUSD = await getPrice('ETH');
-        console.log(`gasFee:${gasfee}`);
-        console.log(`ethPrice: ${ethPriceInUSD}`);
-        const price = Number(gasfee) * Number(ethPriceInUSD)
-        resolve(price.toString());
-    });
+main();
+
+async function test_handleMessage() {
+    handleMessage('123', 'replytoken', '/price BTC')
+        .then(v => console.log(v)).catch(err => console.log(err));
 }
 
-// showGasFeeInTWD().then( v => { console.log(v) });
+async function test_setWallet() {
 
-// db.instance.isUserExist('123').then(async result => {
-//     console.log(`is user exist ? ${result}`);
-//     const insertResult = await db.instance.insertUser('123');
-//     console.log(insertResult);
-//     const selectResult = await db.instance.isUserExist('123');
-//     console.log(selectResult);
-// });
+}
 
-// db.instance.selectUserID('123').then(async (v) => {
-//     console.log(v);
+async function test_getBalance() {
+    const params = {
+        line_uid: 'U1f595cafc25711a6a36c48cc455ba270',
+        user_id: '65',
+        replyToken: '',
+        parameters: ['123']
+    }
+    const wallets: any[] = await db.instance.selectWallets(params.user_id);
+    console.log(wallets);
+    let target: any;
+    let addressOrNickname = params.parameters[0];
+    let reply = '取得餘額失敗';
 
-//     const res = await db.instance.selectWallets(v[0]['id']);
-//     console.log(res);
-//     const a = await db.instance.insertWallet(v[0]['id'], 'address', '123wallet')
-//     console.log(a);
-//     const b = await db.instance.selectWallets(v[0]['id']);
-//     console.log(b);
-// });
+    // 有無下達關鍵字，並嘗試找到符合的
+    if (addressOrNickname) {
+        wallets.forEach( eachw => {
+            if (eachw.nickname == addressOrNickname || eachw.address == addressOrNickname) {
+                target = eachw;
+            }
+        });
+    }
+    
+    // 沒有任何錢包，就失敗
+    if (wallets.length == 0) {
+        reply = `${reply}: 您沒有設置任何錢包`;
+        return reply;
+    }
+    
+    // 沒有找到符合的，就拿第一筆錢包
+    if (!target) {
+        target = wallets[0];
+    }
 
-handleMessage('123', 'replytoken', '/price BTC')
-    .then(v => console.log(v)).catch(err => console.log(err));
+    const balance: string = await getBalanceFromEthereum(target.address);
+    const nickname: string = target.nickname;
+    reply = `錢包：${nickname} \n餘額：${balance}`;
+    return reply;
+}

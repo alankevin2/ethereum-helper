@@ -1,7 +1,7 @@
 import MySQL from 'mysql';
 import  * as Q  from './db_queries_generator';
 
-type Success = any;
+type Success = any | boolean | any[];
 
 export default class Database {
 
@@ -29,6 +29,18 @@ export default class Database {
                 console.error(error);
                 return;
             }
+        });
+    }
+
+    async selectAllUsers(): Promise<Error | Success> {
+        return new Promise<Error | Success>((resolve, reject) => {
+            this.connection!.query(Q.SELECT_ALL_USERS, (err, result) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve(result);
+            });
         });
     }
 

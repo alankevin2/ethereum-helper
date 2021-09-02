@@ -38,6 +38,9 @@ export const CREATE_TABLE_WALLETS =
 
 // users related
 
+
+export const SELECT_ALL_USERS = `SELECT * FROM ${TABLES.USERS} WHERE 1 LIMIT 100`;
+
 export function IS_USER_EXISTS(line_user_id: string): string {
     return `SELECT * FROM ${TABLES.USERS} WHERE ${TABLES.USERS}.\`line_user_id\` = \"${line_user_id}\" LIMIT 1`;
 }
@@ -62,24 +65,25 @@ export function DELETE_USER(line_user_id: string): string {
     return `DELETE FROM ${TABLES.USERS} WHERE ${FIELDS.LINE_USER_ID} = \"${line_user_id}\"`;
 }
 
+
 // wallet related
 
 export function INSERT_WALLET(user_id: string, address: string, nickname: string | null) {
     return `INSERT INTO ${TABLES.WALLETS} SET 
     ${FIELDS.ADDRESS} = \"${address}\",
     ${FIELDS.NICKNAME} = \"${nickname ? nickname : ""}\", 
-    ${FIELDS.USER_ID} = \"${user_id}\"`;
+    ${FIELDS.USER_ID} = ${user_id}`;
 }
 
 export function UPDATE_WALLET(user_id: string, address: string, nickname: string | null) {
     return `UPDATE ${TABLES.WALLETS} SET 
     ${FIELDS.ADDRESS} = \"${address}\",
     ${FIELDS.NICKNAME} = \"${nickname ? nickname : ""}\" 
-    WHERE ${FIELDS.USER_ID} = \"${user_id}\"`;
+    WHERE ${FIELDS.USER_ID} = ${user_id}`;
 }
 
 export function SELECT_WALLETS(user_id: string): string {
-    return `SELECT ${FIELDS.ADDRESS}, ${FIELDS.NICKNAME} FROM ${TABLES.WALLETS} WHERE ${FIELDS.USER_ID} = \"${user_id}\"`;
+    return `SELECT ${FIELDS.ADDRESS}, ${FIELDS.NICKNAME} FROM ${TABLES.WALLETS} WHERE ${FIELDS.USER_ID} = ${user_id}`;
 }
 
 export function DELETE_WALLET(user_id: string, nickname: string): string {
