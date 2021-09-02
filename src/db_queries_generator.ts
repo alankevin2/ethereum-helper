@@ -47,7 +47,7 @@ export function INSERT_USER(line_user_id: string): string {
 }
 
 export function SELECT_USER_ID(line_user_id: string): string {
-    return `SELECT \`id\` FROM ${TABLES.USERS} WHERE ${FIELDS.LINE_USER_ID} = ${line_user_id} LIMIT 1`;
+    return `SELECT \`id\` FROM ${TABLES.USERS} WHERE ${FIELDS.LINE_USER_ID} = "${line_user_id}" LIMIT 1`;
 }
 
 export function UPDATE_LAST_QUERY_SYMBOL(line_user_id: string, symbol: string): string {

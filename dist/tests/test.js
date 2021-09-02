@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const web3_1 = (0, tslib_1.__importDefault)(require("web3"));
-const get_gas_fee_of_ethereum_1 = (0, tslib_1.__importDefault)(require("./get_gas_fee_of_ethereum"));
-const get_price_by_symbol_1 = (0, tslib_1.__importDefault)(require("./get_price_by_symbol"));
-const db_1 = (0, tslib_1.__importDefault)(require("./db"));
+const get_gas_fee_of_ethereum_1 = (0, tslib_1.__importDefault)(require("../src/get_gas_fee_of_ethereum"));
+const get_price_by_symbol_1 = (0, tslib_1.__importDefault)(require("../src/get_price_by_symbol"));
+const db_1 = (0, tslib_1.__importDefault)(require("../src/db"));
 const infura = 'wss://mainnet.infura.io/ws/v3/b633a6af7b8b496596ca35b83eb4712e';
 const web3 = new web3_1.default(new web3_1.default.providers.WebsocketProvider(infura));
 var FiatRatesForTWD;
@@ -30,13 +30,32 @@ exports.default = showGasFeeInTWD;
 //     const selectResult = await db.instance.isUserExist('123');
 //     console.log(selectResult);
 // });
-db_1.default.instance.selectUserID('123').then(async (v) => {
-    console.log(v);
-    const res = await db_1.default.instance.selectWallets(v[0]['id']);
-    console.log(res);
-    const a = await db_1.default.instance.insertWallet(v[0]['id'], 'address', '123wallet');
-    console.log(a);
-    const b = await db_1.default.instance.selectWallets(v[0]['id']);
-    console.log(b);
-});
-//# sourceMappingURL=eth_test.js.map
+// db.instance.selectUserID('123').then(async (v) => {
+//     console.log(v);
+//     const res = await db.instance.selectWallets(v[0]['id']);
+//     console.log(res);
+//     const a = await db.instance.insertWallet(v[0]['id'], 'address', '123wallet')
+//     console.log(a);
+//     const b = await db.instance.selectWallets(v[0]['id']);
+//     console.log(b);
+// });
+let userID;
+async function main() {
+    let userIDHash = {};
+    let userLineID = '456';
+    if (userLineID && !userIDHash[userLineID]) {
+        const exist = await db_1.default.instance.isUserExist(userLineID);
+        console.log(exist);
+        if (!exist || exist instanceof Error) {
+            console.log('not exist');
+            const a = await db_1.default.instance.insertUser(userLineID);
+            console.log(a);
+        }
+        userID = await db_1.default.instance.selectUserID(userLineID);
+        userIDHash[userLineID] = userID;
+        console.log(userID);
+    }
+    console.log(userIDHash);
+}
+main().then(() => { });
+//# sourceMappingURL=test.js.map

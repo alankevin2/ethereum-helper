@@ -27,7 +27,7 @@
     "include": [
       "src/**/*.ts",
       "src/**/*.tsx"
-    ],
+, "tests/eth_test.ts"    ],
     "exclude": [
       "node_modules"
     ]
