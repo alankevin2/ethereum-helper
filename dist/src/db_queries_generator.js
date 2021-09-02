@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DELETE_WALLET = exports.SELECT_WALLETS = exports.UPDATE_WALLET = exports.INSERT_WALLET = exports.DELETE_USER = exports.SELECT_LAST_QUERY_SYMBOL = exports.UPDATE_LAST_QUERY_SYMBOL = exports.SELECT_USER_ID = exports.INSERT_USER = exports.IS_USER_EXISTS = exports.CREATE_TABLE_WALLETS = exports.CREATE_TABLE_USERS = void 0;
+exports.DELETE_WALLET = exports.SELECT_WALLETS = exports.UPDATE_WALLET = exports.INSERT_WALLET = exports.DELETE_USER = exports.SELECT_LAST_QUERY_SYMBOL = exports.UPDATE_LAST_QUERY_SYMBOL = exports.SELECT_USER_ID = exports.INSERT_USER = exports.IS_USER_EXISTS = exports.SELECT_ALL_USERS = exports.CREATE_TABLE_WALLETS = exports.CREATE_TABLE_USERS = void 0;
 const TABLES = {
     USERS: '\`users\`',
     WALLETS: '\`wallets\`',
@@ -33,20 +33,21 @@ exports.CREATE_TABLE_WALLETS = `CREATE TABLE IF NOT EXISTS ${TABLES.WALLETS} (
         PRIMARY KEY (\`id\`, ${FIELDS.NICKNAME})
     );`;
 // users related
+exports.SELECT_ALL_USERS = `SELECT * FROM ${TABLES.USERS} WHERE 1 LIMIT 100`;
 function IS_USER_EXISTS(line_user_id) {
-    return `SELECT * FROM ${TABLES.USERS} WHERE ${TABLES.USERS}.\`line_user_id\` = ${line_user_id} LIMIT 1`;
+    return `SELECT * FROM ${TABLES.USERS} WHERE ${TABLES.USERS}.\`line_user_id\` = \"${line_user_id}\" LIMIT 1`;
 }
 exports.IS_USER_EXISTS = IS_USER_EXISTS;
 function INSERT_USER(line_user_id) {
-    return `INSERT INTO ${TABLES.USERS} (${FIELDS.LINE_USER_ID}) VALUES ("${line_user_id}");`;
+    return `INSERT INTO ${TABLES.USERS} (${FIELDS.LINE_USER_ID}) VALUES (\"${line_user_id}\");`;
 }
 exports.INSERT_USER = INSERT_USER;
 function SELECT_USER_ID(line_user_id) {
-    return `SELECT \`id\` FROM ${TABLES.USERS} WHERE ${FIELDS.LINE_USER_ID} = "${line_user_id}" LIMIT 1`;
+    return `SELECT \`id\` FROM ${TABLES.USERS} WHERE ${FIELDS.LINE_USER_ID} = \"${line_user_id}\" LIMIT 1`;
 }
 exports.SELECT_USER_ID = SELECT_USER_ID;
 function UPDATE_LAST_QUERY_SYMBOL(line_user_id, symbol) {
-    return `UPDATE ${TABLES.USERS} SET ${FIELDS.LAST_QUERY_SYMBOL} = "${symbol}" WHERE ${FIELDS.LINE_USER_ID} = ${line_user_id};`;
+    return `UPDATE ${TABLES.USERS} SET ${FIELDS.LAST_QUERY_SYMBOL} = \"${symbol}\" WHERE ${FIELDS.LINE_USER_ID} = \"${line_user_id}\"`;
 }
 exports.UPDATE_LAST_QUERY_SYMBOL = UPDATE_LAST_QUERY_SYMBOL;
 function SELECT_LAST_QUERY_SYMBOL(line_user_id) {
@@ -54,22 +55,22 @@ function SELECT_LAST_QUERY_SYMBOL(line_user_id) {
 }
 exports.SELECT_LAST_QUERY_SYMBOL = SELECT_LAST_QUERY_SYMBOL;
 function DELETE_USER(line_user_id) {
-    return `DELETE FROM ${TABLES.USERS} WHERE ${FIELDS.LINE_USER_ID} = ${line_user_id}`;
+    return `DELETE FROM ${TABLES.USERS} WHERE ${FIELDS.LINE_USER_ID} = \"${line_user_id}\"`;
 }
 exports.DELETE_USER = DELETE_USER;
 // wallet related
 function INSERT_WALLET(user_id, address, nickname) {
     return `INSERT INTO ${TABLES.WALLETS} SET 
-    ${FIELDS.ADDRESS} = "${address}",
-    ${FIELDS.NICKNAME} = "${nickname ? nickname : ""}", 
-    ${FIELDS.USER_ID} = "${user_id}"`;
+    ${FIELDS.ADDRESS} = \"${address}\",
+    ${FIELDS.NICKNAME} = \"${nickname ? nickname : ""}\", 
+    ${FIELDS.USER_ID} = \"${user_id}\"`;
 }
 exports.INSERT_WALLET = INSERT_WALLET;
 function UPDATE_WALLET(user_id, address, nickname) {
     return `UPDATE ${TABLES.WALLETS} SET 
-    ${FIELDS.ADDRESS} = "${address}",
-    ${FIELDS.NICKNAME} = "${nickname ? nickname : ""}" 
-    WHERE ${FIELDS.USER_ID} = ${user_id}`;
+    ${FIELDS.ADDRESS} = \"${address}\",
+    ${FIELDS.NICKNAME} = \"${nickname ? nickname : ""}\" 
+    WHERE ${FIELDS.USER_ID} = \"${user_id}\"`;
 }
 exports.UPDATE_WALLET = UPDATE_WALLET;
 function SELECT_WALLETS(user_id) {
