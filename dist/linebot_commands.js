@@ -75,8 +75,8 @@ async function getPrice(params) {
     let reply = '取得幣價失敗';
     let symbol = params.parameters[0];
     if (!symbol) {
-        const user = db_1.default.instance.selectUser(params.line_uid);
-        symbol = user.symbol || '';
+        const user = await db_1.default.instance.selectUser(params.line_uid);
+        symbol = user[0].last_query_symbol || '';
     }
     try {
         reply = await (0, get_price_by_symbol_1.default)(symbol);

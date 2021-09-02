@@ -61,9 +61,9 @@ class Database {
             });
         });
     }
-    async selectUserID(line_user_id) {
+    async selectUser(line_user_id) {
         return new Promise((resolve, reject) => {
-            this.connection.query(Q.SELECT_USER_ID(line_user_id), (err, result) => {
+            this.connection.query(Q.SELECT_USER(line_user_id), (err, result) => {
                 if (err) {
                     reject(err);
                     return;
@@ -93,6 +93,8 @@ class Database {
                 resolve(result);
             });
         });
+    }
+    async removeWallet(user_id, address, nickname) {
     }
     async updateWalletAddress(user_id, address, nickname) {
         return new Promise((resolve, reject) => {

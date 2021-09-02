@@ -25,7 +25,12 @@ async function setWallet(params) {
         reply = `${reply}：沒有設置地址`;
         return reply;
     }
-    await db_1.default.instance.insertWallet(params.line_uid, params.parameters[0], params.parameters[1] || '');
+    try {
+        await db_1.default.instance.insertWallet(params.line_uid, params.parameters[0], params.parameters[1] || '');
+    }
+    catch {
+        return reply;
+    }
     reply = '設置成功';
     return reply;
 }
@@ -40,7 +45,7 @@ async function getWallets(params) {
 ;
 async function getBalance(params) {
     // 從資料庫拿取錢包
-    const wallets = await db_1.default.instance.selectWallets(params.line_uid);
+    const wallets = await db_1.default.instance.selectWallets(params.user_id);
     let target;
     let addressOrNickname = params.parameters[0];
     let reply = '取得餘額失敗';
@@ -63,20 +68,23 @@ async function getBalance(params) {
     }
     const balance = await (0, get_wallet_balance_1.default)(target.address);
     const nickname = target.nickname;
-    reply = `錢包：${nickname}
-    餘額上有：${balance}`;
+    reply = `錢包：${nickname}\n餘額：${balance}`;
     return reply;
 }
 async function getPrice(params) {
     let reply = '取得幣價失敗';
     let symbol = params.parameters[0];
     if (!symbol) {
+        const user = db_1.default.instance.selectUser(params.line_uid);
+        symbol = user.symbol || '';
     }
-    else {
-        // await db.instance.
+    try {
+        reply = await (0, get_price_by_symbol_1.default)(symbol);
+        reply = `${params.parameters[0]}: ${reply} USD`;
     }
-    reply = await (0, get_price_by_symbol_1.default)(params.parameters[0]);
-    reply = `params.parameters[0]: ${reply} USD`;
+    catch {
+        return reply;
+    }
     return reply;
 }
 async function getGasPrice(params) {
@@ -85,7 +93,7 @@ async function getGasPrice(params) {
     reply = `${gas} Gwei`;
     return reply;
 }
-async function handleMessage(line_uid, replyToken, text) {
+async function handleMessage(user_id, line_uid, replyToken, text) {
     let reply = `指令錯誤或解析失敗，很抱歉幫不上忙 :(
         你可以試試以下指令：
         ${LineBotCommands.GET_BALANCE}
@@ -98,6 +106,7 @@ async function handleMessage(line_uid, replyToken, text) {
     const commands = text.split(' ')[0];
     const parameters = text.split(' ').splice(1);
     const wrapped = {
+        user_id,
         line_uid,
         replyToken,
         parameters

@@ -88,8 +88,8 @@ async function getPrice(params: CommandParameters): Promise<string> {
     let reply = '取得幣價失敗';
     let symbol = params.parameters[0];
     if (!symbol) {
-        const user: any = db.instance.selectUser(params.line_uid);
-        symbol = user.symbol || '';
+        const user: any = await db.instance.selectUser(params.line_uid);
+        symbol = user[0].last_query_symbol || '';
     }
 
     try {

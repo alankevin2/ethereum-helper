@@ -1,27 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
-const linebot_commands_1 = (0, tslib_1.__importDefault)(require("../src/linebot_commands"));
 const get_wallet_balance_1 = (0, tslib_1.__importDefault)(require("../src/get_wallet_balance"));
+const get_price_by_symbol_1 = (0, tslib_1.__importDefault)(require("../src/get_price_by_symbol"));
 const db_1 = (0, tslib_1.__importDefault)(require("../src/db"));
+const params = {
+    line_uid: '123',
+    user_id: '65',
+    replyToken: '',
+    parameters: ['']
+};
 async function main() {
     // test_handleMessage();
-    console.log(await test_getBalance());
+    // console.log(await test_getBalance());
+    console.log(await test_getPrice());
 }
 main();
-async function test_handleMessage() {
-    (0, linebot_commands_1.default)('123', 'replytoken', '/price BTC')
-        .then(v => console.log(v)).catch(err => console.log(err));
-}
-async function test_setWallet() {
-}
 async function test_getBalance() {
-    const params = {
-        line_uid: 'U1f595cafc25711a6a36c48cc455ba270',
-        user_id: '65',
-        replyToken: '',
-        parameters: ['123']
-    };
     const wallets = await db_1.default.instance.selectWallets(params.user_id);
     console.log(wallets);
     let target;
@@ -47,6 +42,23 @@ async function test_getBalance() {
     const balance = await (0, get_wallet_balance_1.default)(target.address);
     const nickname = target.nickname;
     reply = `錢包：${nickname} \n餘額：${balance}`;
+    return reply;
+}
+async function test_getPrice() {
+    let reply = '取得幣價失敗';
+    let symbol = params.parameters[0];
+    if (!symbol) {
+        const user = await db_1.default.instance.selectUser(params.line_uid);
+        console.log(user);
+        symbol = user[0].last_query_symbol || '';
+    }
+    try {
+        reply = await (0, get_price_by_symbol_1.default)(symbol);
+        reply = `${params.parameters[0]}: ${reply} USD`;
+    }
+    catch {
+        return reply;
+    }
     return reply;
 }
 //# sourceMappingURL=test.js.map
