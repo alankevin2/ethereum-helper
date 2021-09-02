@@ -32,10 +32,11 @@ const textEventHandler = async (event) => {
         if (!exist || exist instanceof Error) {
             await db_1.default.instance.insertUser(userLineID);
         }
-        userID = await db_1.default.instance.selectUserID(userLineID);
-        userIDHash[userLineID] = userID;
+        const user = await db_1.default.instance.selectUser(userLineID);
+        userIDHash[userLineID] = user.id;
+        userID = user.id;
     }
-    const text = await (0, linebot_commands_1.default)(userID, replyToken, event.message.text);
+    const text = await (0, linebot_commands_1.default)(userID, userLineID, replyToken, event.message.text);
     const response = {
         type: 'text',
         text,
