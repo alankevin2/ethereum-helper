@@ -26,14 +26,15 @@ const client = new Client(clientConfig);
 const app: Application = express();
 
 const textEventHandler = async (event: WebhookEvent): Promise<MessageAPIResponseBase | undefined> => {
-  if (event.type !== 'message' || event.message.type !== 'text') {
+  if (event.type !== 'message' || event.message.type !== 'text' || !event.source.userId) {
     return;
   }
 
   const { replyToken, source } = event;
-  const userLineID = source.userId;
-  let userID;
-  if (userLineID && !userIDHash[userLineID]) {
+  const userLineID = source.userId!;
+
+  let userID = userIDHash[userLineID];
+  if (!userID) {
     const exist = await db.instance.isUserExist(userLineID);
     if (!exist || exist instanceof Error) {
         await db.instance.insertUser(userLineID);
