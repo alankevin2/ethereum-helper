@@ -39,19 +39,19 @@ export const CREATE_TABLE_WALLETS =
 // users related
 
 export function IS_USER_EXISTS(line_user_id: string): string {
-    return `SELECT * FROM ${TABLES.USERS} WHERE ${TABLES.USERS}.\`line_user_id\` = ${line_user_id} LIMIT 1`;
+    return `SELECT * FROM ${TABLES.USERS} WHERE ${TABLES.USERS}.\`line_user_id\` = \"${line_user_id}\" LIMIT 1`;
 }
 
 export function INSERT_USER(line_user_id: string): string {
-    return `INSERT INTO ${TABLES.USERS} (${FIELDS.LINE_USER_ID}) VALUES ("${line_user_id}");`;
+    return `INSERT INTO ${TABLES.USERS} (${FIELDS.LINE_USER_ID}) VALUES (\"${line_user_id}\");`;
 }
 
 export function SELECT_USER_ID(line_user_id: string): string {
-    return `SELECT \`id\` FROM ${TABLES.USERS} WHERE ${FIELDS.LINE_USER_ID} = "${line_user_id}" LIMIT 1`;
+    return `SELECT \`id\` FROM ${TABLES.USERS} WHERE ${FIELDS.LINE_USER_ID} = \"${line_user_id}\" LIMIT 1`;
 }
 
 export function UPDATE_LAST_QUERY_SYMBOL(line_user_id: string, symbol: string): string {
-    return `UPDATE ${TABLES.USERS} SET ${FIELDS.LAST_QUERY_SYMBOL} = "${symbol}" WHERE ${FIELDS.LINE_USER_ID} = ${line_user_id};`;
+    return `UPDATE ${TABLES.USERS} SET ${FIELDS.LAST_QUERY_SYMBOL} = \"${symbol}\" WHERE ${FIELDS.LINE_USER_ID} = \"${line_user_id}\"`;
 }
 
 export function SELECT_LAST_QUERY_SYMBOL(line_user_id: string): string {
@@ -59,27 +59,27 @@ export function SELECT_LAST_QUERY_SYMBOL(line_user_id: string): string {
 }
 
 export function DELETE_USER(line_user_id: string): string {
-    return `DELETE FROM ${TABLES.USERS} WHERE ${FIELDS.LINE_USER_ID} = ${line_user_id}`;
+    return `DELETE FROM ${TABLES.USERS} WHERE ${FIELDS.LINE_USER_ID} = \"${line_user_id}\"`;
 }
 
 // wallet related
 
 export function INSERT_WALLET(user_id: string, address: string, nickname: string | null) {
     return `INSERT INTO ${TABLES.WALLETS} SET 
-    ${FIELDS.ADDRESS} = "${address}",
-    ${FIELDS.NICKNAME} = "${nickname ? nickname : ""}", 
-    ${FIELDS.USER_ID} = "${user_id}"`;
+    ${FIELDS.ADDRESS} = \"${address}\",
+    ${FIELDS.NICKNAME} = \"${nickname ? nickname : ""}\", 
+    ${FIELDS.USER_ID} = \"${user_id}\"`;
 }
 
 export function UPDATE_WALLET(user_id: string, address: string, nickname: string | null) {
     return `UPDATE ${TABLES.WALLETS} SET 
-    ${FIELDS.ADDRESS} = "${address}",
-    ${FIELDS.NICKNAME} = "${nickname ? nickname : ""}" 
-    WHERE ${FIELDS.USER_ID} = ${user_id}`;
+    ${FIELDS.ADDRESS} = \"${address}\",
+    ${FIELDS.NICKNAME} = \"${nickname ? nickname : ""}\" 
+    WHERE ${FIELDS.USER_ID} = \"${user_id}\"`;
 }
 
 export function SELECT_WALLETS(user_id: string): string {
-    return `SELECT ${FIELDS.ADDRESS}, ${FIELDS.NICKNAME} FROM ${TABLES.WALLETS} WHERE ${FIELDS.USER_ID} = ${user_id}`;
+    return `SELECT ${FIELDS.ADDRESS}, ${FIELDS.NICKNAME} FROM ${TABLES.WALLETS} WHERE ${FIELDS.USER_ID} = \"${user_id}\"`;
 }
 
 export function DELETE_WALLET(user_id: string, nickname: string): string {
