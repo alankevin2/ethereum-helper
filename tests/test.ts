@@ -10,9 +10,9 @@ import db from '../src/db';
 
 const params = {
     line_uid: '123',
-    user_id: '65',
+    user_id: '5',
     replyToken: '',
-    parameters: ['']
+    parameters: ['SOL']
 }
 
 async function main() {
@@ -69,6 +69,7 @@ async function test_getPrice() {
     try {
         reply = await getPriceFromCoinBase(symbol);
         reply = `${params.parameters[0]}: ${reply} USD`;
+        db.instance.updateSymbol(params.user_id, symbol);
     } catch {
         return reply;
     }

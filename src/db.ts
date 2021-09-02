@@ -80,6 +80,20 @@ export default class Database {
         });
     }
 
+    async updateSymbol(user_id: string, symbol: string): Promise<Error | Success> {
+        return new Promise<Error | Success>((resolve, reject) => {
+            this.connection!.query(Q.UPDATE_LAST_QUERY_SYMBOL(user_id, symbol), (err, result) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve(result);
+            })
+        });
+    }
+
+    
+
     async selectWallets(user_id: string): Promise<Error | Success> {
         return new Promise<Error | Success>((resolve, reject) => {
             this.connection!.query(Q.SELECT_WALLETS(user_id), (err, result) => {
