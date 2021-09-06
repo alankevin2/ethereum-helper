@@ -5,8 +5,8 @@ import db from './db';
 // types and enums
 
 enum LineBotCommands {
-    SET_WALLET = '/set wallet',
-    REMOVE_WALLET = '/mv wallet',
+    SET_WALLET = '/setwallet',
+    REMOVE_WALLET = '/mvwallet',
     GET_WALLETS = '/wallets',
     GET_BALANCE = '/balance',
     GET_PRICE = '/price',

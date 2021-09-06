@@ -1,7 +1,7 @@
 import cheerio from 'cheerio';
 import request from 'request-promise';
 // homepage shows latest ranking of popular coin directly, we use this to crawl htmls
-const baseURL = 'https://coinmarketcap.com/';
+const baseURL = process.env.PRICE_SOURCE_URL!;
 const fakeUA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36';
 
 export default async function getPrice(symbol: string): Promise<string> {
