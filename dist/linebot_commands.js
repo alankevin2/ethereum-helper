@@ -8,8 +8,8 @@ const db_1 = (0, tslib_1.__importDefault)(require("./db"));
 // types and enums
 var LineBotCommands;
 (function (LineBotCommands) {
-    LineBotCommands["SET_WALLET"] = "/set wallet";
-    LineBotCommands["REMOVE_WALLET"] = "/mv wallet";
+    LineBotCommands["SET_WALLET"] = "/setwallet";
+    LineBotCommands["REMOVE_WALLET"] = "/mvwallet";
     LineBotCommands["GET_WALLETS"] = "/wallets";
     LineBotCommands["GET_BALANCE"] = "/balance";
     LineBotCommands["GET_PRICE"] = "/price";
@@ -78,9 +78,11 @@ async function getPrice(params) {
         const user = await db_1.default.instance.selectUser(params.line_uid);
         symbol = user[0].last_query_symbol || '';
     }
+    symbol = symbol.toUpperCase();
     try {
         reply = await (0, get_price_by_symbol_1.default)(symbol);
-        reply = `${params.parameters[0]}: ${reply} USD`;
+        reply = `${symbol}: ${reply} USD`;
+        db_1.default.instance.updateSymbol(params.user_id, symbol);
     }
     catch {
         return reply;

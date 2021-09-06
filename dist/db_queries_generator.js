@@ -46,8 +46,8 @@ function SELECT_USER(line_user_id) {
     return `SELECT * FROM ${TABLES.USERS} WHERE ${FIELDS.LINE_USER_ID} = \"${line_user_id}\" LIMIT 1`;
 }
 exports.SELECT_USER = SELECT_USER;
-function UPDATE_LAST_QUERY_SYMBOL(line_user_id, symbol) {
-    return `UPDATE ${TABLES.USERS} SET ${FIELDS.LAST_QUERY_SYMBOL} = \"${symbol}\" WHERE ${FIELDS.LINE_USER_ID} = \"${line_user_id}\"`;
+function UPDATE_LAST_QUERY_SYMBOL(user_id, symbol) {
+    return `UPDATE ${TABLES.USERS} SET ${FIELDS.LAST_QUERY_SYMBOL} = \"${symbol}\" WHERE \`id\` = ${user_id}`;
 }
 exports.UPDATE_LAST_QUERY_SYMBOL = UPDATE_LAST_QUERY_SYMBOL;
 function SELECT_LAST_QUERY_SYMBOL(line_user_id) {
