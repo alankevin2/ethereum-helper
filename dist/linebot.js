@@ -33,8 +33,8 @@ const textEventHandler = async (event) => {
             await db_1.default.instance.insertUser(userLineID);
         }
         const user = await db_1.default.instance.selectUser(userLineID);
-        userIDHash[userLineID] = user.id;
-        userID = user.id;
+        userIDHash[userLineID] = user[0].id;
+        userID = user[0].id;
     }
     const text = await (0, linebot_commands_1.default)(userID, userLineID, replyToken, event.message.text);
     const response = {

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const web3_1 = (0, tslib_1.__importDefault)(require("web3"));
-const web3 = new web3_1.default(new web3_1.default.providers.WebsocketProvider('wss://mainnet.infura.io/ws/v3/b633a6af7b8b496596ca35b83eb4712e'));
+const web3 = new web3_1.default(new web3_1.default.providers.WebsocketProvider(process.env.INFURA_URL));
 // const wallet = '0x2E43f6EB26d9659b8c4eD86C840F6C45c60f2211';
 async function getBalance(address) {
     return new Promise((resolve, reject) => {
