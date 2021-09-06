@@ -8,8 +8,8 @@ const db_1 = (0, tslib_1.__importDefault)(require("./db"));
 // types and enums
 var LineBotCommands;
 (function (LineBotCommands) {
-    LineBotCommands["SET_WALLET"] = "/set wallet";
-    LineBotCommands["REMOVE_WALLET"] = "/mv wallet";
+    LineBotCommands["SET_WALLET"] = "/setwallet";
+    LineBotCommands["REMOVE_WALLET"] = "/mvwallet";
     LineBotCommands["GET_WALLETS"] = "/wallets";
     LineBotCommands["GET_BALANCE"] = "/balance";
     LineBotCommands["GET_PRICE"] = "/price";
@@ -26,7 +26,7 @@ async function setWallet(params) {
         return reply;
     }
     try {
-        await db_1.default.instance.insertWallet(params.line_uid, params.parameters[0], params.parameters[1] || '');
+        await db_1.default.instance.insertWallet(params.user_id, params.parameters[0], params.parameters[1] || '');
     }
     catch {
         return reply;

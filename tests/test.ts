@@ -10,15 +10,16 @@ import db from '../src/db';
 
 const params = {
     line_uid: '123',
-    user_id: '5',
+    user_id: '65',
     replyToken: '',
     parameters: ['SOL']
 }
 
 async function main() {
     // test_handleMessage();
-    // console.log(await test_getBalance());
-    console.log(await test_getPrice());
+    console.log(await test_getBalance());
+    // console.log(await test_getPrice());
+    await test_setWallet();
 }
 
 main();
@@ -74,4 +75,14 @@ async function test_getPrice() {
         return '取得幣價失敗';
     }
     return reply;
+}
+
+async function test_setWallet() {
+    const params = {
+        user_id: '65',
+        parameters: ['0x2E43f6EB26d9659b8c4eD86C840F6C45c60f2211', 'test']
+    };
+
+    await db.instance.insertWallet(params.user_id, params.parameters[0], params.parameters[1] || '');
+
 }
