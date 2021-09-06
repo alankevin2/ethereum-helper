@@ -58,7 +58,7 @@ async function test_getBalance() {
 }
 
 async function test_getPrice() {
-    let reply = '取得幣價失敗';
+    let reply;
     let symbol = params.parameters[0];
     if (!symbol) {
         const user: any = await db.instance.selectUser(params.line_uid);
@@ -71,7 +71,7 @@ async function test_getPrice() {
         reply = `${params.parameters[0]}: ${reply} USD`;
         db.instance.updateSymbol(params.user_id, symbol);
     } catch {
-        return reply;
+        return '取得幣價失敗';
     }
     return reply;
 }
