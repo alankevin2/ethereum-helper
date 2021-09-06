@@ -6,14 +6,15 @@ const get_price_by_symbol_1 = (0, tslib_1.__importDefault)(require("../src/get_p
 const db_1 = (0, tslib_1.__importDefault)(require("../src/db"));
 const params = {
     line_uid: '123',
-    user_id: '5',
+    user_id: '65',
     replyToken: '',
     parameters: ['SOL']
 };
 async function main() {
     // test_handleMessage();
-    // console.log(await test_getBalance());
-    console.log(await test_getPrice());
+    console.log(await test_getBalance());
+    // console.log(await test_getPrice());
+    await test_setWallet();
 }
 main();
 async function test_getBalance() {
@@ -45,7 +46,7 @@ async function test_getBalance() {
     return reply;
 }
 async function test_getPrice() {
-    let reply = '取得幣價失敗';
+    let reply;
     let symbol = params.parameters[0];
     if (!symbol) {
         const user = await db_1.default.instance.selectUser(params.line_uid);
@@ -58,8 +59,15 @@ async function test_getPrice() {
         db_1.default.instance.updateSymbol(params.user_id, symbol);
     }
     catch {
-        return reply;
+        return '取得幣價失敗';
     }
     return reply;
+}
+async function test_setWallet() {
+    const params = {
+        user_id: '65',
+        parameters: ['0x2E43f6EB26d9659b8c4eD86C840F6C45c60f2211', 'test']
+    };
+    await db_1.default.instance.insertWallet(params.user_id, params.parameters[0], params.parameters[1] || '');
 }
 //# sourceMappingURL=test.js.map

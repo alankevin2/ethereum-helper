@@ -33,7 +33,7 @@ async function setWallet(params: CommandParameters): Promise<string> {
     }
     
     try {
-        await db.instance.insertWallet(params.line_uid, params.parameters[0], params.parameters[1] || '');
+        await db.instance.insertWallet(params.user_id, params.parameters[0], params.parameters[1] || '');
     } catch {
         return reply;
     }
