@@ -87,5 +87,5 @@ export function SELECT_WALLETS(user_id: string): string {
 }
 
 export function DELETE_WALLET(user_id: string, nickname: string): string {
-    return ``;
+    return `DELETE FROM ${TABLES.WALLETS} WHERE ${FIELDS.USER_ID} = \"${user_id}\" AND ${FIELDS.NICKNAME} = \"${nickname}\";`;
 }
