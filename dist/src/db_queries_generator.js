@@ -78,7 +78,7 @@ function SELECT_WALLETS(user_id) {
 }
 exports.SELECT_WALLETS = SELECT_WALLETS;
 function DELETE_WALLET(user_id, nickname) {
-    return ``;
+    return `DELETE FROM ${TABLES.WALLETS} WHERE ${FIELDS.USER_ID} = \"${user_id}\" AND ${FIELDS.NICKNAME} = \"${nickname}\";`;
 }
 exports.DELETE_WALLET = DELETE_WALLET;
 //# sourceMappingURL=db_queries_generator.js.map

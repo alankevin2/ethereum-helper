@@ -36,10 +36,27 @@ async function setWallet(params) {
 }
 async function removeWallet(params) {
     let reply = '移除錢包失敗';
+    if (!params.parameters[0]) {
+        return '你沒有指定欲移除之錢包暱稱, ex: /rmwallet mywallet';
+    }
+    try {
+        await db_1.default.instance.deleteWallet(params.user_id, params.parameters[0]);
+        reply = '移除成功';
+    }
+    catch {
+        return '哦，不！有東西壞掉了';
+    }
     return reply;
 }
 async function getWallets(params) {
     let reply = '你的錢包：';
+    try {
+        const wallets = await db_1.default.instance.selectWallets(params.user_id);
+        reply = `${reply}\n ${JSON.stringify(wallets)}`;
+    }
+    catch {
+        return '哦，不！有東西壞掉了';
+    }
     return reply;
 }
 ;
@@ -74,12 +91,15 @@ async function getBalance(params) {
 async function getPrice(params) {
     let reply = '取得幣價失敗';
     let symbol = params.parameters[0];
-    if (!symbol) {
-        const user = await db_1.default.instance.selectUser(params.line_uid);
-        symbol = user[0].last_query_symbol || '';
-    }
-    symbol = symbol.toUpperCase();
     try {
+        if (!symbol) {
+            const user = await db_1.default.instance.selectUser(params.line_uid);
+            if (user instanceof Error) {
+                return user.message;
+            }
+            symbol = user.last_query_symbol || '';
+        }
+        symbol = symbol.toUpperCase();
         reply = await (0, get_price_by_symbol_1.default)(symbol);
         reply = `${symbol}: ${reply} USD`;
         db_1.default.instance.updateSymbol(params.user_id, symbol);
@@ -96,14 +116,16 @@ async function getGasPrice(params) {
     return reply;
 }
 async function handleMessage(user_id, line_uid, replyToken, text) {
-    let reply = `指令錯誤或解析失敗，很抱歉幫不上忙 :(
-        你可以試試以下指令：
-        ${LineBotCommands.GET_BALANCE}
-        ${LineBotCommands.GET_PRICE}
+    let reply = `你可以試試以下指令：
+        ${LineBotCommands.SET_WALLET} 0x1234.... mywallet
+        ${LineBotCommands.GET_BALANCE} mywallet
+        ${LineBotCommands.GET_WALLETS}
+        ${LineBotCommands.REMOVE_WALLET} mywallet
+        ${LineBotCommands.GET_PRICE} BTC
         ${LineBotCommands.GET_ETH_GAS_PRICE}
         ${LineBotCommands.HELP}`;
     if (typeof text !== 'string') {
-        return reply;
+        return `指令錯誤或解析失敗，很抱歉幫不上忙 :( \n${reply}`;
     }
     const commands = text.split(' ')[0];
     const parameters = text.split(' ').splice(1);
@@ -113,31 +135,40 @@ async function handleMessage(user_id, line_uid, replyToken, text) {
         replyToken,
         parameters
     };
-    switch (commands) {
-        case LineBotCommands.SET_WALLET:
-            reply = await setWallet(wrapped);
-            break;
-        case LineBotCommands.REMOVE_WALLET:
-            reply = await removeWallet(wrapped);
-            break;
-        case LineBotCommands.GET_WALLETS:
-            reply = await getWallets(wrapped);
-            break;
-        case LineBotCommands.GET_BALANCE:
-            reply = await getBalance(wrapped);
-            break;
-        case LineBotCommands.GET_PRICE:
-            reply = await getPrice(wrapped);
-            break;
-        case LineBotCommands.GET_ETH_GAS_PRICE:
-            reply = await getGasPrice(wrapped);
-            break;
-        case LineBotCommands.GET_ETH_GAS_FEE:
-        case LineBotCommands.SUBSCRIBE_GAS_PRICE_LOW:
-            reply = '此功能coming soon';
-            break;
-        case LineBotCommands.HELP:
-            break;
+    try {
+        switch (commands) {
+            case LineBotCommands.SET_WALLET:
+                reply = await setWallet(wrapped);
+                break;
+            case LineBotCommands.REMOVE_WALLET:
+                reply = await removeWallet(wrapped);
+                break;
+            case LineBotCommands.GET_WALLETS:
+                reply = await getWallets(wrapped);
+                break;
+            case LineBotCommands.GET_BALANCE:
+                reply = await getBalance(wrapped);
+                break;
+            case LineBotCommands.GET_PRICE:
+                reply = await getPrice(wrapped);
+                break;
+            case LineBotCommands.GET_ETH_GAS_PRICE:
+                reply = await getGasPrice(wrapped);
+                break;
+            case LineBotCommands.GET_ETH_GAS_FEE:
+            case LineBotCommands.SUBSCRIBE_GAS_PRICE_LOW:
+                reply = '此功能coming soon';
+                break;
+            case LineBotCommands.HELP:
+                break;
+            default:
+                reply = `指令錯誤或解析失敗，很抱歉幫不上忙 :( \n${reply}`;
+                break;
+        }
+    }
+    catch (err) {
+        console.error(err);
+        return '哦，不！ 似乎有東西壞了 :O';
     }
     return reply;
 }

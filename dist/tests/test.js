@@ -13,6 +13,7 @@ const params = {
 async function main() {
     // test_handleMessage();
     console.log(await test_getBalance());
+    setTimeout(async () => console.log(await test_getPrice()), 45000);
     // console.log(await test_getPrice());
     await test_setWallet();
 }
@@ -51,7 +52,7 @@ async function test_getPrice() {
     if (!symbol) {
         const user = await db_1.default.instance.selectUser(params.line_uid);
         console.log(user);
-        symbol = user[0].last_query_symbol || '';
+        symbol = user.last_query_symbol || '';
     }
     try {
         reply = await (0, get_price_by_symbol_1.default)(symbol);
